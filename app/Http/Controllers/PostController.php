@@ -20,6 +20,12 @@ class PostController extends Controller
     public function show(Post $post)
     {
         // $data = Post::find($id);
+        if(is_null($post)){
+            return response()->json([
+                'message' => 'Post not found'
+            ], 404);
+        }
+        
         return response()->json($post, 200);
     }
 
