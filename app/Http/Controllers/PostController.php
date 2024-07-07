@@ -17,10 +17,10 @@ class PostController extends Controller
         return response()->json($data, 200);
     }
 
-    public function show($id)
+    public function show(Post $post)
     {
-        $data = Post::find($id);
-        return response()->json($data, 200);
+        // $data = Post::find($id);
+        return response()->json($post, 200);
     }
 
     public function store(Request $request)
