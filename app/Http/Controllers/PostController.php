@@ -25,15 +25,25 @@ class PostController extends Controller
                 'message' => 'Post not found'
             ], 404);
         }
-        
+
         return response()->json($post, 200);
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $response = Post::create($data);
 
+        $validator = Validator::make($data,[
+            'title' => ['required','min:5'],
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'error' => $validator->errors()
+            ],400);
+        }
+        
+        $response = Post::create($data);
         return response()->json($response, 201);
     }
 
