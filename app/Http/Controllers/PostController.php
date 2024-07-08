@@ -12,11 +12,17 @@ use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function index()
     {
-        DB::listen(function ($query) {
-            var_dump($query->sql);
-        });
+        // DB::listen(function ($query) {
+        //     var_dump($query->sql);
+        // });
 
         $data = Post::with(['user'])->paginate(5); // eager load
         return new PostCollection(($data));
@@ -50,7 +56,8 @@ class PostController extends Controller
             ], 400);
         }
 
-        $response = Post::create($data);
+        // $response = Post::create($data);
+        $response = request()->user()->posts()->create($data);
         return response()->json($response, 201);
     }
 
