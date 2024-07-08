@@ -26,7 +26,8 @@ class PostController extends Controller
             ], 404);
         }
 
-        return response()->json($post, 200);
+        return new PostResource($post);
+        // return response()->json($post, 200);
     }
 
     public function store(Request $request)
@@ -42,7 +43,7 @@ class PostController extends Controller
                 'error' => $validator->errors()
             ],400);
         }
-        
+
         $response = Post::create($data);
         return response()->json($response, 201);
     }
