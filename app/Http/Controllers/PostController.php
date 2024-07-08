@@ -7,13 +7,18 @@ use App\Http\Resources\Post\PostResource;
 use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use DB;
+// use DB;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $data = Post::paginate(5);
+        DB::listen(function ($query) {
+            var_dump($query->sql);
+        });
+
+        $data = Post::with(['user'])->paginate(5); // eager load
         return new PostCollection(($data));
         // return response()->json($data, 200);
     }
@@ -21,7 +26,7 @@ class PostController extends Controller
     public function show(Post $post)
     {
         // $data = Post::find($id);
-        if(is_null($post)){
+        if (is_null($post)) {
             return response()->json([
                 'message' => 'Post not found'
             ], 404);
@@ -35,14 +40,14 @@ class PostController extends Controller
     {
         $data = $request->all();
 
-        $validator = Validator::make($data,[
-            'title' => ['required','min:5'],
+        $validator = Validator::make($data, [
+            'title' => ['required', 'min:5'],
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'error' => $validator->errors()
-            ],400);
+            ], 400);
         }
 
         $response = Post::create($data);
